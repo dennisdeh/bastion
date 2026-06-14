@@ -14,13 +14,13 @@ os.environ["BASTION_USER"] = os.getenv("BASTION_USER", "bastion")
 os.environ["IMAGE_VERSION"] = os.getenv("IMAGE_VERSION", "2506.01")
 os.environ["SERVER_OS"] = os.getenv("SERVER_OS", "noble")
 os.environ["IMAGE_OS"] = os.getenv("IMAGE_OS", "noble")
-os.environ["IMAGE_NAME"] = os.getenv("IMAGE_NAME", "gnzsnz/bastion")
+os.environ["IMAGE_NAME"] = os.getenv("IMAGE_NAME", "dennisdeh/bastion")
 os.environ["SERVER_PORT"] = os.getenv("SERVER_PORT", "2022")
 os.environ["SSH_LISTEN_PORT"] = os.getenv("SSH_LISTEN_PORT", "2222")
 
 # Define Docker images and paths
 openssh_image = (
-    f"gnzsnz/openssh:{os.environ['IMAGE_VERSION']}-{os.environ['SERVER_OS']}"
+    f"dennisdeh/openssh:{os.environ['IMAGE_VERSION']}-{os.environ['SERVER_OS']}"
 )
 bastion_image = f"{os.environ['IMAGE_NAME']}:{os.environ['IMAGE_VERSION']}-{os.environ['IMAGE_OS']}"
 docker_wait = 2

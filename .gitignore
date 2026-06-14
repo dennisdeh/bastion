@@ -27,3 +27,8 @@ docker-compose.yml
 .LSOverride
 # Thumbnails
 ._*
+/.idea/docker-bastion.iml
+/.idea/modules.xml
+/.idea/inspectionProfiles/profiles_settings.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/vcs.xml

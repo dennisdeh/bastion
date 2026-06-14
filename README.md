@@ -18,8 +18,8 @@ Features:
 
 Follow the steps below to have a running SSH bastion:
 
-- Create a [docker-compose.yml](https://github.com/gnzsnz/docker-bastion/blob/master/docker-compose.yml-dist) file. See [example](#Run-the-container) below
-- Create an [.env](https://github.com/gnzsnz/docker-bastion/blob/master/.env-dist) file. See available [options](#setup).
+- Create a [docker-compose.yml](https://github.com/dennisdeh/docker-bastion/blob/master/docker-compose.yml-dist) file. See [example](#Run-the-container) below
+- Create an [.env](https://github.com/dennisdeh/docker-bastion/blob/master/.env-dist) file. See available [options](#setup).
 - Copy `authorized_keys` file in `data` folder. We will create two users and asume they already have authorized keys in `/home/user_name/.ssh/autorized_keys`
 
 ```bash
@@ -35,7 +35,7 @@ cp /home/{$USERS}/.ssh/authorized_keys $PWD/data/home/{$USERS}/.ssh
 ```bash
 docker run -it --rm --env-file .env \
   -v $PWD/data:/data \
-  gnzsnz/bastion /provision.sh
+  dennisdeh/bastion /provision.sh
 ```
 
 - We are ready to go
@@ -57,7 +57,7 @@ This is telling ssh to create an ssh connetion to the server specified with para
 We will clone the git repository to use it as a template and set our preferences.
 
 ```bash
-git clone https://github.com/gnzsnz/docker-bastion.git
+git clone https://github.com/dennisdeh/docker-bastion.git
 cp .env-dist .env
 nano .env # edit env variables
 cp docker-compose.yml-dist docker-compose.yml
@@ -68,7 +68,7 @@ mkdir -p $PWD/data/home/bastion/.ssh
 cp authorized_keys $PWD/data/home/bastion/.ssh
 # run provision
 docker run -it --rm -v $PWD/data:/data --env-file .env \
-  gnzsnz/bastion /provision.sh
+  dennisdeh/bastion /provision.sh
 # start up your SSH bastion
 docker compose up -d && docker compose logs -ft
 ```
@@ -81,7 +81,7 @@ The following variables are available in the .env file
 
 | Variable | default | Description |
 | --- | --- | --- |
-| APT_PROXY | blank | Defines an optional APT_PROXY to speed up image build. format -> http://aptproxy:3142. You can try [apt-cacher-ng](https://github.com/gnzsnz/apt-cacher-ng) |
+| APT_PROXY | blank | Defines an optional APT_PROXY to speed up image build. format -> http://aptproxy:3142. You can try [apt-cacher-ng](https://github.com/dennisdeh/apt-cacher-ng) |
 | SSH_LISTEN_PORT | 22222 | host external published port |
 | USERS | bastion | Coma separated list of users, ex USERS=bastion,devops. Provisioning script will create users defined in this variable |
 | USER_SHELL | /usr/sbin/nologin | mandatory, required to set user shell |
@@ -115,7 +115,7 @@ docker compose build
 
 If defined `APT_PROXY` will be used during build time to speed up the build.
 
-You can find ready-to-use bastion images in [docker hub](https://hub.docker.com/r/gnzsnz/bastion) and [github container registry](https://github.com/gnzsnz/docker-bastion/pkgs/container/bastion). The docker compose file provided as an example will pull the image from docker hub.
+You can find ready-to-use bastion images in [docker hub](https://hub.docker.com/r/dennisdeh/bastion) and [github container registry](https://github.com/dennisdeh/docker-bastion/pkgs/container/bastion). The docker compose file provided as an example will pull the image from docker hub.
 
 ## Provision
 
@@ -152,7 +152,7 @@ Run provision script
 ```bash
 docker run -it --rm --env-file .env \
   -v $PWD/data:/data \
-  gnzsnz/bastion /provision.sh
+  dennisdeh/bastion /provision.sh
 ```
 
 Once the provision script is run, data directory will have all the data required to run the container. Take into account that data directory owner and permissions will reflect data/etc/passwd UIDs and GIDs, you will need `sudo` to make changes.
@@ -177,7 +177,7 @@ services:
         APT_PROXY: ${APT_PROXY}
         BASE_VERSION: ${BASE_VERSION}
         IMAGE_VERSION: ${IMAGE_VERSION}
-    image: gnzsnz/bastion:${IMAGE_VERSION}-${BASE_VERSION}
+    image: dennisdeh/bastion:${IMAGE_VERSION}-${BASE_VERSION}
     restart: unless-stopped
     ports:
       - ${SSH_LISTEN_PORT}:22
@@ -236,14 +236,14 @@ To add more users, the easiest option is to edit your .env file, set USERS and r
 ```bash
 docker run -it --rm -e USERS=new_user,another_user \
   -v $PWD/data:/data \
-  gnzsnz/bastion /provision.sh
+  dennisdeh/bastion /provision.sh
 ```
 
 Disable existing users
 
 ```bash
 docker run -it --rm -v $PWD/data:/data \
-  gnzsnz/bastion adduser --disable-login user_name
+  dennisdeh/bastion adduser --disable-login user_name
 ```
 
 You can add authorized_keys as explained in [provision](#provision) section.

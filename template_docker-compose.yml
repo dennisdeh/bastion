@@ -9,7 +9,7 @@ services:
         APT_PROXY: ${APT_PROXY}
         BASE_VERSION: ${BASE_VERSION}
         IMAGE_VERSION: ${IMAGE_VERSION}
-    image: gnzsnz/bastion:${IMAGE_VERSION}-${BASE_VERSION}
+    image: dennisdeh/bastion:${IMAGE_VERSION}-${BASE_VERSION}
     restart: unless-stopped
     ports:
       - ${SSH_LISTEN_PORT}:22

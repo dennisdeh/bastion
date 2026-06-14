@@ -6,7 +6,7 @@
 #
 # entrypoint script for sshd bastion docker image. it starts sshd by default,
 # takes '-o' sshd option parameters. or run a command in container, ex:
-# docker run -it gnzsnz/bastion bash
+# docker run -it dennisdeh/bastion bash
 #
 ###############################################################################
 
@@ -29,6 +29,45 @@ stop() {
 	echo "> Done... $?"
 }
 
+check_totp_users() {
+	if [ "$TOTP_ENABLED" != "yes" ]; then
+		return 0
+	fi
+
+	echo "> Verifying TOTP enrollment ..."
+
+	local failed=0
+	local user
+
+	for user in $(getent group ssh-bastion | awk -F: '{print $4}' | tr ',' ' '); do
+
+		home=$(getent passwd "$user" | cut -d: -f6)
+		ga_file="${home}/.google_authenticator"
+
+		if [ ! -f "$ga_file" ]; then
+			echo "> ERROR: user '$user' has no .google_authenticator file"
+			failed=1
+			continue
+		fi
+
+		if ! stat -c "%U" "$ga_file" | grep -qx "$user"; then
+			echo "> ERROR: '$ga_file' is not owned by '$user'"
+			failed=1
+		fi
+
+		if [ "$(stat -c "%a" "$ga_file")" != "400" ]; then
+			echo "> WARNING: '$ga_file' permissions are not 400"
+		fi
+	done
+
+	if [ "$failed" -ne 0 ]; then
+		echo "> TOTP validation failed. Refusing to start."
+		exit 1
+	fi
+
+	echo "> All users have valid TOTP enrollment."
+}
+
 check_provision() {
 
 	if [ ! -f $PROVISON ]; then
@@ -41,7 +80,7 @@ check_provision() {
 		echo "> You might want to provision your data/ dir
     docker run -it --rm --env-file .env \
       -v $PWD/data:/data \
-      gnzsnz/bastion /provision.sh
+      dennisdeh/bastion /provision.sh
     "
 		exit 1
 	fi
@@ -97,13 +136,14 @@ set_CA() {
 
 commmon_start() {
 	check_provision
+	check_totp_users
 	set_totp
 	set_CA
 	bastion_banner
 	lslogins
 }
 
-echo "> SSH Bastion 🐡🏯"
+echo "> SSH Bastion:"
 echo "> Running $*"
 if [ "$(basename "$1" 2>/dev/null)" == "$DAEMON" ]; then
 	commmon_start

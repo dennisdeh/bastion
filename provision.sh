@@ -11,7 +11,7 @@
 #  --hostname=bastion \
 #  -v $PWD/data:/data \
 #  --name bastion_provision \
-#  gnzsnz/bastion:202208 /provision.sh
+#  dennisdeh/bastion:202208 /provision.sh
 ###############################################################################
 
 set -e

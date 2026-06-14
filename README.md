@@ -1,4 +1,5 @@
 # SSH Bastion
+Fork of the [docker-bastion](https://github.com/gnzsnz/docker-bastion) project.
 
 Dockerized SSH bastion :japanese_castle:, with hardened defaults. An SSH bastion is a jump server accessible from the Internet that gives access to services in a private network. Once a bastion is in place you can access private network services through it.
 

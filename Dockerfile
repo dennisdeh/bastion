@@ -3,7 +3,6 @@ FROM ubuntu:${BASE_VERSION}
 
 ARG BASE_VERSION
 ARG APT_PROXY
-ARG IMAGE_VERSION
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # hadolint ignore=DL3008,SC2028
 RUN if [ -n "$APT_PROXY" ]; then \
@@ -15,11 +14,13 @@ RUN if [ -n "$APT_PROXY" ]; then \
     DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
     openssh-server libpam-google-authenticator qrencode && \
     rm -rf /var/lib/apt/lists/* && \
-    mkdir /run/sshd && \
+    mkdir -p /run/sshd && \
     if id ubuntu >/dev/null 2>&1; then \
       userdel -rf ubuntu \
     ;fi && \
-    groupadd -g 59999 ssh-bastion && \
+    if ! getent group ssh-bastion >/dev/null 2>&1; then \
+      groupadd -g 59999 ssh-bastion; \
+    fi && \
     cp /etc/ssh/sshd_config /etc/ssh/sshd_config-dist && \
     awk '$5 >= 3071' /etc/ssh/moduli > /etc/ssh/moduli.secure && \
     mv /etc/ssh/moduli.secure /etc/ssh/moduli && \
@@ -27,7 +28,7 @@ RUN if [ -n "$APT_PROXY" ]; then \
     grep -v "include common-auth" /etc/pam.d/sshd.back > /etc/pam.d/sshd && \
     echo -e "# TOTP\nauth required pam_google_authenticator.so \nauth"\
     "required pam_permit.so" >> /etc/pam.d/sshd && \
-    rm /etc/ssh/ssh_host_*key*
+    rm -f /etc/ssh/ssh_host_*key*
 
 COPY sshd_config /etc/ssh/
 COPY entrypoint.sh /
@@ -40,8 +41,6 @@ HEALTHCHECK --interval=30m --timeout=15s --start-period=10s \
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/sbin/sshd", "-D", "-e"]
 
-LABEL org.opencontainers.image.source=https://github.com/gnzsnz/docker-bastion.git
-LABEL org.opencontainers.image.url=https://hub.docker.com/r/gnzsnz/bastion
+LABEL org.opencontainers.image.source=https://github.com/dennisdeh/docker-bastion.git
 LABEL org.opencontainers.image.description="OpenSSH Bastion container"
 LABEL org.opencontainers.image.licenses=MIT
-LABEL org.opencontainers.image.version=${IMAGE_VERSION}-${BASE_VERSION}

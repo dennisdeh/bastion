@@ -8,7 +8,7 @@ on:
 env:
   SEARCH_FOR: openssh-server openssh-sftp-server openssh-client libcrypt1 libssl3
   SEARCH_TERM: 'Depends:\|Version:'
-  IMAGE_NAME: gnzsnz/bastion
+  IMAGE_NAME: dennisdeh/bastion
 
 jobs:
   checkupdate:

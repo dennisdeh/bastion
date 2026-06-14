@@ -8,7 +8,7 @@ on:
     branches: [ "master" ]
 env:
   USER: bastion
-  IMAGE_NAME: gnzsnz/bastion
+  IMAGE_NAME: dennisdeh/bastion
   SERVER_PORT: 2022
 
 jobs:
@@ -60,7 +60,7 @@ jobs:
           file: test/Dockerfile
           build-args: |
             BASE_VERSION=${{ env.BASE_VERSION }}
-          tags: gnzsnz/openssh:${{ env.IMAGE_VERSION }}-${{ matrix.server_os }}
+          tags: dennisdeh/openssh:${{ env.IMAGE_VERSION }}-${{ matrix.server_os }}
 
       - name: Install dependencies
         run: |

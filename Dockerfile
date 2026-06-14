@@ -16,7 +16,7 @@ RUN if [ -n "$APT_PROXY" ]; then \
     openssh-server libpam-google-authenticator qrencode && \
     rm -rf /var/lib/apt/lists/* && \
     mkdir /run/sshd && \
-    if id ubuntu; then \
+    if id ubuntu >/dev/null 2>&1; then \
       userdel -rf ubuntu \
     ;fi && \
     groupadd -g 59999 ssh-bastion && \

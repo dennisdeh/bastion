@@ -24,7 +24,7 @@ Follow the steps below to have a running SSH bastion:
 
 ```bash
 # create home folder
-export USERS=devops,bastion
+export USERS=bastion
 mkdir $PWD/data/home/{$USERS}/.ssh
 # example to copy authorized_keys file
 cp /home/{$USERS}/.ssh/authorized_keys $PWD/data/home/{$USERS}/.ssh
@@ -33,14 +33,21 @@ cp /home/{$USERS}/.ssh/authorized_keys $PWD/data/home/{$USERS}/.ssh
 - Provision the `data` folder. This is required to create the folder structure required by SSH bastion. See more details on [provisioning](#provision)
 
 ```bash
-docker run -it --rm --env-file .env \
-  -v $PWD/data:/data \
-  dennisdeh/bastion /provision.sh
+set -a
+. ./.env
+set +a
+
+docker run -it --rm \
+  --env-file .env \
+  -v "$PWD/data:/data" \
+  "dennisdeh/bastion:${IMAGE_VERSION}-${BASE_VERSION}" \
+  /provision.sh
 ```
 
 - We are ready to go
 
 ```bash
+docker build --no-cache --progress=plain -f Dockerfile -t dennisdeh/bastion:local-resolute .
 docker compose up
 ```
 

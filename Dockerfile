@@ -12,7 +12,7 @@ RUN if [ -n "$APT_PROXY" ]; then \
     apt-get update && \
     apt-get upgrade -yq && \
     DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
-    openssh-server libpam-google-authenticator qrencode && \
+    openssh-server libpam-google-authenticator qrencode util-linux && \
     rm -rf /var/lib/apt/lists/* && \
     mkdir -p /run/sshd && \
     if id ubuntu >/dev/null 2>&1; then \
@@ -44,3 +44,4 @@ CMD ["/usr/sbin/sshd", "-D", "-e"]
 LABEL org.opencontainers.image.source=https://github.com/dennisdeh/docker-bastion.git
 LABEL org.opencontainers.image.description="OpenSSH Bastion container"
 LABEL org.opencontainers.image.licenses=MIT
+LABEL org.opencontainers.image.version=${IMAGE_VERSION}-${BASE_VERSION}

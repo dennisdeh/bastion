@@ -140,7 +140,11 @@ commmon_start() {
 	set_totp
 	set_CA
 	bastion_banner
-	lslogins
+	if command -v lslogins >/dev/null 2>&1; then
+		lslogins
+	else
+		echo "> lslogins not available, skipping login summary"
+	fi
 }
 
 echo "> SSH Bastion:"
